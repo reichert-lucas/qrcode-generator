@@ -18,11 +18,17 @@ use Mpdf\QrCode\Output;
 */
 
 Route::get('/', function (Request $request) {
-    $objQrCode = new QrCode($request->qrcode);
-    $image = (new Output\Png)->output($objQrCode, 400);
-
-    header('Content-Type: image/png');
-    echo $image;
+    if (isset($request->all()['qrcode'])) {
+        $objQrCode = new QrCode($request->qrcode);
+        $image = (new Output\Png)->output($objQrCode, 400);
+    
+        header('Content-Type: image/png');
+        echo $image;
+    } else {
+        echo 'Tente acessar informando um QrCode, os acesse as rotas:';
+        echo '<a href="estatico">Estático</a>';
+        echo '<a href="dinamico">Dinâmico</a>';
+    }
 });
 
 Route::get('/estatico/', function (Request $request) {
@@ -44,7 +50,7 @@ Route::get('/estatico/', function (Request $request) {
 
 
 Route::get('/dinamico/', function (Request $request) {
-    $payloadCreator = (new PayloadCreator)->setMerchantName('Lucas Coelho Reichert')
+    $payloadCreator = (new PayloadCreator)->setMerchantName('')
                                             ->setMerchantCity('')
                                             ->setAmount(0.05)
                                             ->setTxid('61d384cadcc90e9530c0f74951053ff0')
